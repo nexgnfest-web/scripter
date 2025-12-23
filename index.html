@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI YouTube Scripter | Pro Edition</title>
+    <title>AI YouTube Scripter | GitHub Edition</title>
     <style>
         :root { --yt: #ff0000; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); padding: 20px; color: var(--text); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); padding: 20px; color: var(--text); }
         .container { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
         h1 { color: var(--yt); text-align: center; font-size: 32px; margin-bottom: 5px; }
         .sub { text-align: center; color: #64748b; margin-bottom: 35px; font-size: 14px; }
         
         label { font-weight: 700; display: block; margin-top: 20px; font-size: 13px; text-transform: uppercase; color: #475569; }
         input, select { width: 100%; padding: 15px; margin-top: 8px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
-        input:focus { border-color: var(--yt); outline: none; }
-
+        
         .btn-gen { background: var(--yt); color: white; border: none; padding: 18px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         .btn-gen:hover { background: #cc0000; transform: translateY(-2px); }
 
@@ -26,10 +25,10 @@
 
 <div class="container">
     <h1>YouTube Scripter Pro</h1>
-    <p class="sub">10-Minute High Retention Scripts • Dec 2025</p>
+    <p class="sub">Hosted Edition • No Billing • No Limits</p>
     
     <label>Video Topic</label>
-    <input type="text" id="topic" placeholder="e.g., Top 5 AI tools that will change your life in 2026">
+    <input type="text" id="topic" placeholder="e.g., The future of AI in India 2026">
 
     <label>Script Language</label>
     <select id="lang">
@@ -38,9 +37,9 @@
         <option value="English">English</option>
     </select>
 
-    <button class="btn-gen" onclick="generateScript()">GENERATE FULL SCRIPT</button>
+    <button class="btn-gen" onclick="generateScript()">GENERATE 10-MINUTE SCRIPT</button>
     
-    <div class="loader" id="loader">🧠 AI IS WRITING YOUR 10-MINUTE SCRIPT...</div>
+    <div class="loader" id="loader">🧠 AI IS WRITING... PLEASE WAIT 30-60 SECONDS</div>
     <div id="output"></div>
 </div>
 
@@ -55,14 +54,16 @@
 
         loader.style.display = "block";
         out.style.display = "none";
-        out.innerText = "Connecting to AI Engine...";
+        out.innerText = "";
 
         try {
-            const prompt = `Write a conversational 1800-word YouTube script for a 10-minute video. Topic: "${topic}". Language: ${lang}. Include Hook, Intro, 5 Chapters, and Outro.`;
+            const prompt = `Write a deep, conversational 1800-word YouTube script for a 10-minute video. Topic: "${topic}". Language: ${lang}. Start with a high-energy Hook, then Intro, 5 Chapters, and Outro with CTA.`;
             
-            // Using AllOrigins Proxy - More stable for Indian users/hosting
+            // The "Magic" Proxy for GitHub Pages
             const targetUrl = "https://api.duckduckgo.com/aichat";
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&timestamp=${new Date().getTime()}`;
+            
+            // We use AllOrigins to wrap the request and bypass the "Browser Blocked" error
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
             const response = await fetch(proxyUrl, {
                 method: "POST",
@@ -75,16 +76,16 @@
 
             const data = await response.json();
             
-            // Extract the text from the Proxy response
+            // Extracting the text from the AllOrigins wrapper
             if (data.contents) {
                 out.innerText = data.contents;
                 out.style.display = "block";
             } else {
-                throw new Error("Empty Response");
+                throw new Error("No data received");
             }
             
         } catch (e) {
-            out.innerText = "The AI server is busy or blocked by your network. Please click Generate again.";
+            out.innerText = "The AI is currently busy. Please wait 10 seconds and click 'GENERATE' again. \n(Error: " + e.message + ")";
             out.style.display = "block";
         } finally {
             loader.style.display = "none";
