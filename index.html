@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI YouTube Scripter | Dec 2025 Fix</title>
+    <title>AI YouTube Scripter | Puter Edition</title>
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         :root { --yt: #ff0000; --bg: #f8fafc; --text: #1e293b; }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); padding: 20px; color: var(--text); }
         .container { max-width: 850px; margin: 40px auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
         h1 { color: var(--yt); text-align: center; font-size: 32px; margin-bottom: 5px; }
         .sub { text-align: center; color: #64748b; margin-bottom: 35px; font-size: 14px; }
+        
         label { font-weight: 700; display: block; margin-top: 20px; font-size: 13px; text-transform: uppercase; color: #475569; }
         input, select { width: 100%; padding: 15px; margin-top: 8px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        
         .btn-gen { background: var(--yt); color: white; border: none; padding: 20px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,0,0,0.2); }
         .btn-gen:hover { background: #cc0000; transform: translateY(-2px); }
+        .btn-gen:disabled { background: #cbd5e1; cursor: not-allowed; }
+
         #output { margin-top: 35px; white-space: pre-wrap; background: #fdfdfd; padding: 30px; border-radius: 15px; border: 1px solid #e2e8f0; line-height: 1.8; color: #1e293b; min-height: 300px; display: none; }
         .loader { display: none; text-align: center; color: var(--yt); font-weight: 800; margin-top: 20px; }
     </style>
@@ -22,17 +27,18 @@
 
 <div class="container">
     <h1>YouTube Scripter Pro</h1>
-    <p class="sub">OpenRouter Free Engine • Verified Dec 23, 2025</p>
+    <p class="sub">Serverless Engine • No API Key Required • Gemini 2.0 Flash</p>
     
-    <label>Choose AI Model (Free Only)</label>
-    <select id="modelID">
-        <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (Fastest)</option>
-        <option value="google/gemma-3-27b:free">Google Gemma 3 (Best Quality)</option>
-        <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Solid Backup)</option>
+    <label>Video Style</label>
+    <select id="style">
+        <option value="Talking Head (Educational & Direct)">Talking Head (Informative)</option>
+        <option value="Documentary (Deep Dive & Dramatic Storytelling)">Documentary (Cinematic)</option>
+        <option value="Vlog (Casual, Fast-paced & Relatable)">Vlog (Personal)</option>
+        <option value="Mystery/Thriller (High Suspense & Storytelling)">Mystery/Thriller (Storytelling)</option>
     </select>
 
     <label>Video Topic</label>
-    <input type="text" id="topic" placeholder="e.g., Why everyone is moving to Nashik in 2026">
+    <input type="text" id="topic" placeholder="e.g., How AI is changing India in 2026">
 
     <label>Language</label>
     <select id="lang">
@@ -43,61 +49,59 @@
 
     <button class="btn-gen" id="genBtn" onclick="generateScript()">GENERATE 10-MINUTE SCRIPT</button>
     
-    <div class="loader" id="loader">🧠 AI IS PROCESSING... PLEASE WAIT 30-60 SECONDS</div>
+    <div class="loader" id="loader">🧠 AI IS THINKING... (Streaming Response)</div>
     <div id="output"></div>
 </div>
 
 <script>
-    // Your Key: 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
-    const API_KEY = "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";
-
     async function generateScript() {
         const topic = document.getElementById('topic').value;
         const lang = document.getElementById('lang').value;
-        const model = document.getElementById('modelID').value;
+        const style = document.getElementById('style').value;
         const out = document.getElementById('output');
         const loader = document.getElementById('loader');
         const btn = document.getElementById('genBtn');
 
         if (!topic) return alert("Please enter a topic!");
 
+        // Reset UI
         loader.style.display = "block";
-        out.style.display = "none";
+        out.style.display = "block";
+        out.innerHTML = "<i>Initializing stream...</i>";
         btn.disabled = true;
 
-        const prompt = `Write a deep, conversational 1800-word YouTube script for a 10-minute video. 
-        Topic: "${topic}". 
-        Language: ${lang}. 
-        Structure: Hook (0-60s), Intro, 5 Deep Content Chapters, Mid-roll engagement, and Outro with CTA.`;
+        const prompt = `Act as a professional YouTube Script Writer. Write a deep, conversational 1800-word script for a 10-minute video.
+        Topic: "${topic}"
+        Style: ${style}
+        Language: ${lang}
+        
+        Include:
+        - Hook (0:00-0:45): High intensity opening.
+        - Intro: Emotional connection to topic.
+        - Chapters: 5 clear points with [Visual Cues] for the editor.
+        - Mid-Video: Question for the audience.
+        - Outro: Strong CTA and summary.`;
 
         try {
-            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${API_KEY}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": window.location.href, 
-                    "X-Title": "YouTube Scripter Pro"
-                },
-                body: JSON.stringify({
-                    "model": model,
-                    "messages": [{ "role": "user", "content": prompt }]
-                })
+            // Puter.js Streaming Chat with Gemini 2.0 Flash
+            const response = await puter.ai.chat(prompt, {
+                model: 'gemini-2.0-flash',
+                stream: true
             });
 
-            const data = await response.json();
+            out.innerHTML = ""; // Clear the initialization message
             
-            if (data.choices && data.choices[0]) {
-                out.innerText = data.choices[0].message.content;
-                out.style.display = "block";
-            } else {
-                const err = data.error ? data.error.message : "Model temporarily unavailable.";
-                throw new Error(err);
+            for await (const part of response) {
+                if (part?.text) {
+                    // Convert newlines to HTML line breaks for the web display
+                    out.innerHTML += part.text.replaceAll('\n', '<br>');
+                    // Auto-scroll to bottom as text generates
+                    window.scrollTo(0, document.body.scrollHeight);
+                }
             }
 
         } catch (e) {
-            out.innerText = "Error: " + e.message + "\n\nTip: Try switching to 'Google Gemma 3' in the model dropdown if Gemini is busy.";
-            out.style.display = "block";
+            out.innerHTML = `<span style="color:red">Error: ${e.message}. <br>Make sure you are logged into Puter or have enough credits.</span>`;
         } finally {
             loader.style.display = "none";
             btn.disabled = false;
