@@ -3,80 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI YouTube Scripter | GitHub Pages Fix</title>
+    <title>AI YouTube Scripter Pro</title>
     <style>
         :root { --yt: #ff0000; --bg: #f8fafc; --text: #1e293b; }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); padding: 20px; color: var(--text); }
-        .container { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        .container { max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
         h1 { color: var(--yt); text-align: center; font-size: 32px; margin-bottom: 5px; }
         .sub { text-align: center; color: #64748b; margin-bottom: 35px; font-size: 14px; }
+        
         label { font-weight: 700; display: block; margin-top: 20px; font-size: 13px; text-transform: uppercase; color: #475569; }
         input, select { width: 100%; padding: 15px; margin-top: 8px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fff; }
-        .btn-gen { background: var(--yt); color: white; border: none; padding: 18px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        
+        .btn-gen { background: var(--yt); color: white; border: none; padding: 20px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,0,0,0.2); }
         .btn-gen:hover { background: #cc0000; transform: translateY(-2px); }
+        .btn-gen:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
+
         #output { margin-top: 35px; white-space: pre-wrap; background: #fdfdfd; padding: 30px; border-radius: 15px; border: 1px solid #e2e8f0; line-height: 1.8; color: #1e293b; min-height: 300px; display: none; }
         .loader { display: none; text-align: center; color: var(--yt); font-weight: 800; margin-top: 20px; }
+        .word-count { text-align: right; font-size: 12px; color: #94a3b8; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>YouTube Scripter Pro</h1>
-    <p class="sub">Hosted on GitHub Pages • Anti-Bot Fix Applied</p>
+    <p class="sub">Powered by OpenRouter • 10-Minute Script Engine</p>
     
-    <label>Video Topic</label>
-    <input type="text" id="topic" placeholder="e.g., Secret facts about Space 2026">
+    <label>What is your video topic?</label>
+    <input type="text" id="topic" placeholder="e.g., How AI is changing Indian Education in 2026">
 
-    <label>Script Language</label>
+    <label>Target Language</label>
     <select id="lang">
-        <option value="Hinglish">Hinglish (Hindi + English)</option>
-        <option value="Hindi">Hindi (शुद्ध हिंदी)</option>
+        <option value="Hinglish (Mix of Hindi and English)">Hinglish</option>
+        <option value="Hindi (शुद्ध हिंदी)">Hindi</option>
         <option value="English">English</option>
     </select>
 
-    <button class="btn-gen" id="genBtn" onclick="generateScript()">GENERATE 10-MINUTE SCRIPT</button>
+    <button class="btn-gen" id="genBtn" onclick="generateScript()">GENERATE 1800-WORD SCRIPT</button>
     
-    <div class="loader" id="loader">🧠 AI IS PROCESSING... PLEASE WAIT 30s</div>
+    <div class="loader" id="loader">🧠 AI IS THINKING... (This takes 30-45 seconds for a 10m script)</div>
+    
     <div id="output"></div>
+    <div class="word-count" id="stats"></div>
 </div>
 
 <script>
+    const API_KEY = "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";
+
     async function generateScript() {
         const topic = document.getElementById('topic').value;
         const lang = document.getElementById('lang').value;
         const out = document.getElementById('output');
         const loader = document.getElementById('loader');
         const btn = document.getElementById('genBtn');
+        const stats = document.getElementById('stats');
 
         if (!topic) return alert("Please enter a topic!");
 
         loader.style.display = "block";
         out.style.display = "none";
         btn.disabled = true;
+        stats.innerText = "";
+
+        const prompt = `Act as a professional YouTube Script Writer. Write a 1,800-word script for a 10-minute video. 
+        Topic: "${topic}". 
+        Language: ${lang}. 
+        
+        Mandatory Structure:
+        1. [HOOK] (First 45s) - Start with a shocking fact or high-energy curiosity gap.
+        2. [INTRO] (45s-1:30m) - Promise a major payoff and introduce the agenda.
+        3. [BODY - 5 CHAPTERS] (1:30m-8:30m) - Provide deep value, data, and storytelling for each point.
+        4. [ENGAGEMENT BRIDGE] (At 5m) - Ask a specific comment-worthy question.
+        5. [OUTRO] (8:30m-10:00m) - Summarize and give a strong CTA to subscribe.
+        
+        Write in a conversational, fast-paced style. Include [Visual Cues] for the editor.`;
 
         try {
-            const prompt = `Write a professional 1800-word YouTube script for a 10-minute video. Topic: "${topic}". Language: ${lang}. Include Hook, Intro, 5 Chapters, and Outro.`;
-            
-            // Using a text-based fetcher that bypasses the "Code Injection" issue
-            const targetUrl = "https://text-to-ai-api.vercel.app/api/generate"; // Secure Bridge
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://duckduckgo.com/aichat/')}?q=${encodeURIComponent(prompt)}`;
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${API_KEY}`,
+                    "HTTP-Referer": "https://github.com/nexgnfest-web/scripter",
+                    "X-Title": "YouTube Scripter Pro",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "model": "google/gemini-2.0-flash-001",
+                    "messages": [{ "role": "user", "content": prompt }]
+                })
+            });
 
-            const response = await fetch(proxyUrl);
             const data = await response.json();
             
-            // Filter out HTML tags if they appear
-            let cleanText = data.contents.replace(/<[^>]*>?/gm, '');
-
-            if (cleanText.length > 500) {
-                out.innerText = cleanText;
+            if (data.choices && data.choices[0]) {
+                const scriptText = data.choices[0].message.content;
+                out.innerText = scriptText;
                 out.style.display = "block";
+                
+                const words = scriptText.split(/\s+/).length;
+                stats.innerText = `Word count: ${words} words (~${Math.round(words/150)} minutes)`;
             } else {
-                throw new Error("Short response");
+                throw new Error("API Limit reached or Key Error");
             }
-            
+
         } catch (e) {
-            // Manual Fallback if API blocks us again
-            out.innerText = "Script Generator is currently syncing with Indian Servers. \n\nSuggested Outline for " + topic + ":\n1. Hook: Start with a surprising stat.\n2. Intro: Explain the 10-minute deep dive.\n3. Section 1-5: Detailed breakdown.\n4. Call to Action: Click the link below.\n\n(Please try clicking 'Generate' again in 10 seconds)";
+            out.innerText = "Error: " + e.message + "\n\nPlease check if your OpenRouter key has credits or if the model is available.";
             out.style.display = "block";
         } finally {
             loader.style.display = "none";
